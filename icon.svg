@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#f4efe6"/>
-  <rect x="128" y="96" width="256" height="320" rx="20" fill="#fbf8f2" stroke="#ddd4c5" stroke-width="8"/>
-  <line x1="176" y1="176" x2="336" y2="176" stroke="#ddd4c5" stroke-width="14" stroke-linecap="round"/>
-  <line x1="176" y1="240" x2="336" y2="240" stroke="#ddd4c5" stroke-width="14" stroke-linecap="round"/>
-  <line x1="176" y1="304" x2="280" y2="304" stroke="#ddd4c5" stroke-width="14" stroke-linecap="round"/>
-  <circle cx="368" cy="368" r="64" fill="#c8603a"/>
-  <path d="M368 336v34l22 14" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect width="512" height="512" rx="96" fill="#1a201c"/>
+  <rect x="128" y="96" width="256" height="320" rx="20" fill="#222a24" stroke="#2c352e" stroke-width="8"/>
+  <line x1="176" y1="176" x2="336" y2="176" stroke="#3a463c" stroke-width="14" stroke-linecap="round"/>
+  <line x1="176" y1="240" x2="336" y2="240" stroke="#3a463c" stroke-width="14" stroke-linecap="round"/>
+  <line x1="176" y1="304" x2="280" y2="304" stroke="#3a463c" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="368" cy="368" r="64" fill="#7fb094"/>
+  <path d="M368 336v34l22 14" fill="none" stroke="#10160f" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

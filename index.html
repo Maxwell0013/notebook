@@ -3,21 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#f4efe6">
+<meta name="theme-color" content="#161b17">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Notebook</title>
 <style>
   :root{
-    --bg:#f4efe6; --bg2:#efe8db; --ink:#33302b; --ink-soft:#6f6a61;
-    --line:#ddd4c5; --ember:#c8603a; --ember-soft:#e0a487; --card:#fbf8f2;
-    --good:#5b7c5a;
+    /* dark-first: soft eucalyptus on a desaturated forest-charcoal */
+    --bg:#1a201c; --bg2:#141915; --ink:#e7ede6; --ink-soft:#93a294;
+    --line:#2c352e; --accent:#7fb094; --accent-soft:#46604f; --card:#222a24;
+    --good:#88b894; --warn:#cf9b6b; --ring:rgba(127,176,148,.16);
     --serif:Georgia,"Iowan Old Style","Palatino Linotype",serif;
     --sans:"Segoe UI",system-ui,-apple-system,sans-serif;
   }
-  @media (prefers-color-scheme: dark){
-    :root{ --bg:#23211d; --bg2:#1d1b18; --ink:#ece6da; --ink-soft:#a59f93;
-      --line:#3a362f; --card:#2a2823; --ember:#e0764a; --ember-soft:#a9572f; --good:#8aa888; }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#eef2ec; --bg2:#e6ece4; --ink:#222a24; --ink-soft:#5d6b5f;
+      --line:#d3ddd2; --card:#f9fbf8; --accent:#4f8266; --accent-soft:#9cc1aa;
+      --good:#4f8266; --warn:#b07d44; --ring:rgba(79,130,102,.14); }
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
@@ -33,7 +35,7 @@
     color:var(--ink);background:transparent;border:none;border-bottom:1px solid var(--line);
     padding:6px 2px;outline:none;
   }
-  .title-in:focus{border-color:var(--ember-soft)}
+  .title-in:focus{border-color:var(--accent)}
   .date{font-size:12px;color:var(--ink-soft);letter-spacing:.06em;white-space:nowrap}
 
   .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -43,22 +45,22 @@
     color:var(--ink);transition:.15s;
   }
   .btn:hover{border-color:var(--ink-soft)}
-  .btn-ember{background:var(--ember);color:#fff;border-color:transparent}
-  .btn-ember:hover{filter:brightness(1.05);border-color:transparent}
+  .btn-ember{background:var(--accent);color:#10160f;border-color:transparent}
+  .btn-ember:hover{filter:brightness(1.06);border-color:transparent}
   .spacer{flex:1}
 
   textarea#notes{
     width:100%;min-height:46vh;padding:18px;font-size:15.5px;line-height:1.6;
     font-family:var(--sans);color:var(--ink);background:var(--card);
     border:1px solid var(--line);border-radius:16px;outline:none;resize:vertical;
-    box-shadow:0 18px 48px -32px rgba(60,50,35,.5);
+    box-shadow:0 18px 48px -34px rgba(0,0,0,.55);
   }
-  textarea#notes:focus{border-color:var(--ember-soft);box-shadow:0 0 0 3px rgba(200,96,58,.10)}
+  textarea#notes:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
 
   .statusbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);padding:0 4px}
   .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-soft);display:inline-block;margin-right:5px;vertical-align:middle}
   .dot.on{background:var(--good)}
-  .dot.warn{background:var(--ember)}
+  .dot.warn{background:var(--warn)}
 
   /* settings drawer */
   .drawer{
@@ -72,7 +74,7 @@
   .field input[type=number]{width:90px;padding:8px 10px;font-size:14px;border:1px solid var(--line);
     border-radius:9px;background:var(--bg);color:var(--ink);outline:none}
   .note{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:0}
-  .note.warn{color:var(--ember)}
+  .note.warn{color:var(--warn)}
 
   .toast{
     position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
