@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f4efe6">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Notebook</title>
+<style>
+  :root{
+    --bg:#f4efe6; --bg2:#efe8db; --ink:#33302b; --ink-soft:#6f6a61;
+    --line:#ddd4c5; --ember:#c8603a; --ember-soft:#e0a487; --card:#fbf8f2;
+    --good:#5b7c5a;
+    --serif:Georgia,"Iowan Old Style","Palatino Linotype",serif;
+    --sans:"Segoe UI",system-ui,-apple-system,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#23211d; --bg2:#1d1b18; --ink:#ece6da; --ink-soft:#a59f93;
+      --line:#3a362f; --card:#2a2823; --ember:#e0764a; --ember-soft:#a9572f; --good:#8aa888; }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:radial-gradient(120% 120% at 50% 0%,var(--bg) 0%,var(--bg2) 100%);
+    color:var(--ink);font-family:var(--sans);min-height:100vh;
+    display:flex;justify-content:center;padding:24px;
+  }
+  .stage{width:100%;max-width:720px;display:flex;flex-direction:column;gap:14px}
+  .topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .title-in{
+    flex:1;min-width:180px;font-family:var(--serif);font-size:22px;font-weight:500;
+    color:var(--ink);background:transparent;border:none;border-bottom:1px solid var(--line);
+    padding:6px 2px;outline:none;
+  }
+  .title-in:focus{border-color:var(--ember-soft)}
+  .date{font-size:12px;color:var(--ink-soft);letter-spacing:.06em;white-space:nowrap}
+
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .btn{
+    appearance:none;cursor:pointer;font-family:var(--sans);font-size:13.5px;font-weight:600;
+    padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);
+    color:var(--ink);transition:.15s;
+  }
+  .btn:hover{border-color:var(--ink-soft)}
+  .btn-ember{background:var(--ember);color:#fff;border-color:transparent}
+  .btn-ember:hover{filter:brightness(1.05);border-color:transparent}
+  .spacer{flex:1}
+
+  textarea#notes{
+    width:100%;min-height:46vh;padding:18px;font-size:15.5px;line-height:1.6;
+    font-family:var(--sans);color:var(--ink);background:var(--card);
+    border:1px solid var(--line);border-radius:16px;outline:none;resize:vertical;
+    box-shadow:0 18px 48px -32px rgba(60,50,35,.5);
+  }
+  textarea#notes:focus{border-color:var(--ember-soft);box-shadow:0 0 0 3px rgba(200,96,58,.10)}
+
+  .statusbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);padding:0 4px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-soft);display:inline-block;margin-right:5px;vertical-align:middle}
+  .dot.on{background:var(--good)}
+  .dot.warn{background:var(--ember)}
+
+  /* settings drawer */
+  .drawer{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 18px;
+    display:none;flex-direction:column;gap:14px;
+  }
+  .drawer.open{display:flex}
+  .drawer h2{font-family:var(--serif);font-weight:500;font-size:17px;margin:0}
+  .field{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .field label{font-size:13.5px;color:var(--ink-soft);min-width:150px}
+  .field input[type=number]{width:90px;padding:8px 10px;font-size:14px;border:1px solid var(--line);
+    border-radius:9px;background:var(--bg);color:var(--ink);outline:none}
+  .note{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:0}
+  .note.warn{color:var(--ember)}
+
+  .toast{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--bg);font-size:13px;padding:9px 16px;border-radius:999px;
+    opacity:0;transition:.25s;pointer-events:none;z-index:9;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="topbar">
+    <input class="title-in" id="title" placeholder="Untitled notes" autocomplete="off">
+    <span class="date" id="date"></span>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn" id="stampBtn">+ Time stamp</button>
+    <button class="btn" id="exportBtn">Export .md</button>
+    <button class="btn" id="copyBtn">Copy</button>
+    <span class="spacer"></span>
+    <button class="btn btn-ember" id="nudgeBtn">Enable hourly nudges</button>
+    <button class="btn" id="gearBtn" title="Settings">⚙</button>
+  </div>
+
+  <textarea id="notes" placeholder="Start typing. Everything autosaves to this browser. Hit “+ Time stamp” to drop the current time, and I'll nudge you every so often to jot down what you're on."></textarea>
+
+  <div class="statusbar">
+    <span><span class="dot" id="saveDot"></span><span id="saveTxt">saved</span></span>
+    <span id="lastTxt">no notes yet</span>
+    <span class="spacer"></span>
+    <span id="nudgeStatus"><span class="dot warn" id="nudgeDot"></span>nudges off</span>
+  </div>
+
+  <div class="drawer" id="drawer">
+    <h2>Settings</h2>
+    <div class="field">
+      <label for="interval">Nudge me every (minutes)</label>
+      <input type="number" id="interval" min="5" max="480" step="5" value="60">
+      <button class="btn" id="applyInterval">Apply</button>
+    </div>
+    <div class="field">
+      <button class="btn" id="testBtn">Send a test nudge in 5 sec</button>
+      <button class="btn" id="disableBtn">Turn nudges off</button>
+    </div>
+    <p class="note" id="capNote"></p>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var $=function(id){return document.getElementById(id)};
+
+  // ---------- persistence ----------
+  var K={notes:"nb_notes",title:"nb_title",interval:"nb_interval",last:"nb_last",on:"nb_on"};
+  var notes=$("notes"), title=$("title");
+  notes.value = localStorage.getItem(K.notes) || "";
+  title.value = localStorage.getItem(K.title) || "";
+  var interval = parseInt(localStorage.getItem(K.interval)||"60",10);
+  $("interval").value = interval;
+
+  function save(){
+    localStorage.setItem(K.notes, notes.value);
+    localStorage.setItem(K.title, title.value);
+    flashSaved();
+  }
+  var saveT;
+  function onEdit(){ localStorage.setItem(K.last, Date.now()); clearTimeout(saveT); saveT=setTimeout(save,250); refreshLast(); }
+  notes.addEventListener("input", onEdit);
+  title.addEventListener("input", function(){ clearTimeout(saveT); saveT=setTimeout(save,250); });
+
+  var savedDotT;
+  function flashSaved(){
+    $("saveTxt").textContent="saved"; $("saveDot").classList.add("on");
+    clearTimeout(savedDotT); savedDotT=setTimeout(function(){$("saveDot").classList.remove("on")},1200);
+  }
+
+  // ---------- date / last-noted ----------
+  function p(n){return(n<10?"0":"")+n}
+  function todayStr(){var d=new Date();return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}
+  function hhmm(){var d=new Date();return p(d.getHours())+":"+p(d.getMinutes());}
+  $("date").textContent = todayStr();
+
+  function refreshLast(){
+    var t=parseInt(localStorage.getItem(K.last)||"0",10);
+    if(!t || !notes.value.trim()){ $("lastTxt").textContent="no notes yet"; return; }
+    var s=Math.floor((Date.now()-t)/1000), m=Math.floor(s/60);
+    $("lastTxt").textContent = m<1 ? "last note just now" : "last note "+m+" min ago";
+  }
+  setInterval(refreshLast,15000); refreshLast();
+
+  // ---------- time stamp ----------
+  $("stampBtn").addEventListener("click", function(){
+    var stamp="\n\n## "+hhmm()+" — ";
+    var s=notes.selectionStart, e=notes.selectionEnd, v=notes.value;
+    if(v && !v.endsWith("\n\n")) {/* keep spacing */}
+    notes.value = v.slice(0,s)+stamp+v.slice(e);
+    var pos=s+stamp.length;
+    notes.focus(); notes.setSelectionRange(pos,pos);
+    onEdit();
+  });
+
+  // ---------- export / copy ----------
+  function buildMd(){
+    var t=(title.value.trim()||"Notebook");
+    return "# "+t+" — "+todayStr()+"\n\n"+notes.value.trim()+"\n";
+  }
+  $("exportBtn").addEventListener("click", function(){
+    var md=buildMd(), name="Notes "+todayStr()+" "+hhmm().replace(":","")+".md";
+    var blob=new Blob([md],{type:"text/markdown;charset=utf-8"});
+    var url=URL.createObjectURL(blob), a=document.createElement("a");
+    a.href=url; a.download=name; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(url)},1500); toast("Saved "+name);
+  });
+  $("copyBtn").addEventListener("click", function(){
+    var md=buildMd();
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(md).then(function(){toast("Copied")},fb);
+    } else fb();
+    function fb(){var ta=document.createElement("textarea");ta.value=md;ta.style.position="fixed";ta.style.opacity="0";
+      document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("Copied")}catch(e){toast("Copy blocked")}document.body.removeChild(ta);}
+  });
+
+  // ---------- settings drawer ----------
+  $("gearBtn").addEventListener("click", function(){ $("drawer").classList.toggle("open"); });
+
+  // ====================================================================
+  //  NOTIFICATIONS
+  // ====================================================================
+  var swReg=null;
+  var hasTrigger = ("Notification" in window) && ("showTrigger" in Notification.prototype || "TimestampTrigger" in window);
+  var WINDOW_COUNT = 14;   // how many future nudges to schedule ahead
+
+  function setNudgeUI(on){
+    $("nudgeDot").className = "dot "+(on?"on":"warn");
+    $("nudgeStatus").lastChild.textContent = on ? " nudges on · every "+interval+" min" : " nudges off";
+    $("nudgeBtn").textContent = on ? "Nudges on ✓" : "Enable hourly nudges";
+    $("nudgeBtn").classList.toggle("btn-ember", !on);
+  }
+  function capNote(){
+    if(!("Notification" in window)){ $("capNote").className="note warn"; $("capNote").textContent="This browser can't show notifications."; return; }
+    if(hasTrigger){ $("capNote").className="note"; $("capNote").textContent="Scheduled nudges fire even when this tab or the whole browser is closed (Chrome / Edge)."; }
+    else { $("capNote").className="note warn"; $("capNote").textContent="Heads up: this browser only fires nudges while the tab stays open. For closed-tab nudges, use Chrome or Edge."; }
+  }
+  capNote();
+
+  async function ensureSW(){
+    if(swReg) return swReg;
+    if(!("serviceWorker" in navigator)) throw new Error("no SW");
+    swReg = await navigator.serviceWorker.register("sw.js");
+    await navigator.serviceWorker.ready;
+    return swReg;
+  }
+
+  async function clearScheduled(reg){
+    try{
+      var list = await reg.getNotifications({includeTriggered:true});
+      list.forEach(function(n){ if(n.tag && n.tag.indexOf("nudge")===0) n.close(); });
+    }catch(e){}
+  }
+
+  async function scheduleNudges(){
+    var reg = await ensureSW();
+    await clearScheduled(reg);
+    var now=Date.now(), gap=interval*60000;
+    if(hasTrigger){
+      for(var i=1;i<=WINDOW_COUNT;i++){
+        await reg.showNotification("Notebook", {
+          tag:"nudge-"+i,
+          body:"Jot down what you're working on.",
+          requireInteraction:true,
+          showTrigger:new TimestampTrigger(now + i*gap),
+          data:{url:location.href}
+        });
+      }
+    } else {
+      startPageTimer(); // fallback: only works while tab open
+    }
+  }
+
+  // fallback timer (tab must stay open)
+  var pageTimer=null;
+  function startPageTimer(){
+    stopPageTimer();
+    var next=Date.now()+interval*60000;
+    pageTimer=setInterval(function(){
+      if(Date.now()>=next){
+        next=Date.now()+interval*60000;
+        if(swReg) swReg.showNotification("Notebook",{body:"Jot down what you're working on.",requireInteraction:true,data:{url:location.href}});
+        else new Notification("Notebook",{body:"Jot down what you're working on."});
+      }
+    },20000);
+  }
+  function stopPageTimer(){ if(pageTimer){clearInterval(pageTimer);pageTimer=null;} }
+
+  async function enableNudges(){
+    if(!("Notification" in window)){ toast("Notifications not supported here"); return; }
+    var perm = Notification.permission;
+    if(perm!=="granted") perm = await Notification.requestPermission();
+    if(perm!=="granted"){ toast("Permission denied — enable it in the site's lock-icon menu"); capNote(); return; }
+    await scheduleNudges();
+    localStorage.setItem(K.on,"1");
+    setNudgeUI(true); toast("Nudges on — every "+interval+" min");
+  }
+  async function disableNudges(){
+    localStorage.setItem(K.on,"0");
+    stopPageTimer();
+    try{ var reg=await ensureSW(); await clearScheduled(reg);}catch(e){}
+    setNudgeUI(false); toast("Nudges off");
+  }
+
+  $("nudgeBtn").addEventListener("click", function(){
+    if(localStorage.getItem(K.on)==="1") $("drawer").classList.add("open");
+    else enableNudges();
+  });
+  $("disableBtn").addEventListener("click", disableNudges);
+  $("applyInterval").addEventListener("click", async function(){
+    var v=parseInt($("interval").value,10);
+    if(isNaN(v)||v<5){ toast("Pick at least 5 min"); return; }
+    interval=v; localStorage.setItem(K.interval,String(v));
+    if(localStorage.getItem(K.on)==="1"){ await scheduleNudges(); setNudgeUI(true); toast("Updated — every "+v+" min"); }
+    else { setNudgeUI(false); toast("Saved — "+v+" min"); }
+  });
+  $("testBtn").addEventListener("click", async function(){
+    if(!("Notification" in window)){toast("Not supported");return;}
+    var perm=Notification.permission; if(perm!=="granted") perm=await Notification.requestPermission();
+    if(perm!=="granted"){toast("Permission denied");return;}
+    var reg=await ensureSW();
+    if(hasTrigger){
+      await reg.showNotification("Notebook — test",{tag:"nudge-test",body:"If you see this, scheduled nudges work. Try closing the tab and waiting.",requireInteraction:true,showTrigger:new TimestampTrigger(Date.now()+5000),data:{url:location.href}});
+      toast("Test scheduled — fires in 5 sec (you can close the tab)");
+    } else {
+      setTimeout(function(){reg.showNotification("Notebook — test",{body:"Fired while tab open.",data:{url:location.href}})},5000);
+      toast("Test fires in 5 sec — keep tab open");
+    }
+  });
+
+  // restore prior state
+  setNudgeUI(localStorage.getItem(K.on)==="1");
+  if(localStorage.getItem(K.on)==="1"){
+    // refill the rolling schedule each time the app opens
+    scheduleNudges().catch(function(){});
+  } else {
+    ensureSW().catch(function(){}); // register SW early so click handling works
+  }
+
+  // ---------- toast ----------
+  var toastT;
+  function toast(m){var t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("show")},2200);}
+})();
+</script>
+</body>
+</html>

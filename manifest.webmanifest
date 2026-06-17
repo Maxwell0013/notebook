@@ -1,0 +1,13 @@
+{
+  "name": "Notebook",
+  "short_name": "Notebook",
+  "description": "A note-taking page that nudges you to jot down what you're working on.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#f4efe6",
+  "theme_color": "#f4efe6",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
