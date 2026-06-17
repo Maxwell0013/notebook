@@ -1,9 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#1a201c"/>
-  <rect x="128" y="96" width="256" height="320" rx="20" fill="#222a24" stroke="#2c352e" stroke-width="8"/>
-  <line x1="176" y1="176" x2="336" y2="176" stroke="#3a463c" stroke-width="14" stroke-linecap="round"/>
-  <line x1="176" y1="240" x2="336" y2="240" stroke="#3a463c" stroke-width="14" stroke-linecap="round"/>
-  <line x1="176" y1="304" x2="280" y2="304" stroke="#3a463c" stroke-width="14" stroke-linecap="round"/>
-  <circle cx="368" cy="368" r="64" fill="#7fb094"/>
-  <path d="M368 336v34l22 14" fill="none" stroke="#10160f" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect width="512" height="512" rx="96" fill="#0d1512"/>
+  <!-- trunk -->
+  <rect x="246" y="300" width="20" height="92" rx="8" fill="#5b4734"/>
+  <!-- soil -->
+  <ellipse cx="256" cy="396" rx="78" ry="16" fill="#3a2e22"/>
+  <!-- pine tiers -->
+  <path d="M256 96 L200 192 L312 192 Z" fill="#4e8458"/>
+  <path d="M256 156 L184 256 L328 256 Z" fill="#5f9468"/>
+  <path d="M256 216 L168 316 L344 316 Z" fill="#7cbd86"/>
+  <!-- leader bud -->
+  <circle cx="256" cy="92" r="20" fill="#aed49b"/>
 </svg>
