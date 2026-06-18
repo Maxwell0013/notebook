@@ -3,520 +3,813 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0d1512">
+<meta name="theme-color" content="#15252f">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Notebook</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
 <style>
+  @font-face{font-family:'NB Display';src:url('fonts/display-regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:'NB Display';src:url('fonts/display-medium.ttf') format('truetype');font-weight:500;font-style:normal;font-display:swap}
+  @font-face{font-family:'NB Display';src:url('fonts/display-bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+  @font-face{font-family:'NB Body';src:url('fonts/body-light.ttf') format('truetype');font-weight:300;font-style:normal;font-display:swap}
+  @font-face{font-family:'NB Body';src:url('fonts/body-regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:'NB Body';src:url('fonts/body-italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
+  @font-face{font-family:'NB Body';src:url('fonts/body-medium.ttf') format('truetype');font-weight:500;font-style:normal;font-display:swap}
+  @font-face{font-family:'NB Body';src:url('fonts/body-semibold.ttf') format('truetype');font-weight:600;font-style:normal;font-display:swap}
+  @font-face{font-family:'NB Body';src:url('fonts/body-bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+
   :root{
-    /* Pacific Northwest — spruce, fern, bark, fog */
-    --bg:#0d1512; --bg2:#080f0c; --panel:#13201a; --page:#16241d;
-    --ink:#e6efe2; --ink-soft:#8fa896; --ink-faint:#647a6b;
-    --line:#26362d; --line-soft:#1e2c25;
-    --fern:#7cbd86; --fern-deep:#4e8458; --moss:#8aa06a; --sage:#aed49b;
-    --bark:#6b5440; --bark-deep:#4a3a2c; --soil:#3a2e22;
-    --warn:#d2a36a; --good:#7cbd86;
-    --fog:rgba(200,222,210,.09);
-    --glow:rgba(124,189,134,.38);
-    --serif:"Fraunces","Iowan Old Style",Georgia,serif;
-    --sans:"Segoe UI",system-ui,-apple-system,sans-serif;
-    --pop:cubic-bezier(.34,1.56,.64,1);
-    --r:22px;
-  }
-  @media (prefers-color-scheme: light){
-    :root{
-      --bg:#e3ebdf; --bg2:#d8e2d2; --panel:#eef3e9; --page:#f7faf2;
-      --ink:#22301f; --ink-soft:#586a54; --ink-faint:#84927e;
-      --line:#cdd9c4; --line-soft:#dbe4d3;
-      --fern:#3f7a48; --fern-deep:#326139; --moss:#5f7a44; --sage:#4e8456;
-      --bark:#7a6047; --bark-deep:#5b4734; --soil:#b7a589;
-      --warn:#9a6b2e; --good:#3f7a48;
-      --fog:rgba(255,255,255,.5);
-      --glow:rgba(63,122,72,.24);
-    }
+    --ink:#192d38; --ink2:#22323a; --soft:#5b6b73; --faint:#93a0a3;
+    --bg:#e8ece8; --panel:#ffffff; --line:#e3e7e3; --line2:#d4dad4;
+    --green:#05e560; --green-deep:#0a8f46; --lime:#b9ff00; --head:#15252f;
+    --sans:'NB Body',system-ui,-apple-system,sans-serif;
+    --disp:'NB Display','NB Body',sans-serif;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%}
-  body{
-    background:radial-gradient(135% 120% at 50% -10%,var(--bg) 0%,var(--bg2) 70%);
-    color:var(--ink);font-family:var(--sans);min-height:100vh;
-    display:flex;justify-content:center;padding:28px 22px 116px;
-    -webkit-font-smoothing:antialiased;
-    scrollbar-width:thin;scrollbar-color:var(--fern-deep) transparent;
-  }
-  body::before{ /* paper grain */
-    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-  body::after{ /* morning fog over the canopy */
-    content:"";position:fixed;left:0;right:0;top:0;height:160px;z-index:0;pointer-events:none;
-    background:linear-gradient(var(--fog),transparent);
-  }
-  ::-webkit-scrollbar{width:12px;height:12px}
-  ::-webkit-scrollbar-track{background:transparent}
-  ::-webkit-scrollbar-thumb{background:linear-gradient(var(--fern-deep),var(--moss));
-    border-radius:99px;border:3px solid var(--bg)}
-  ::-webkit-scrollbar-thumb:hover{background:var(--fern)}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--sans);color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+  textarea::placeholder,input::placeholder{color:#9fb0a8}
+  ::-webkit-scrollbar{width:11px;height:11px}
+  ::-webkit-scrollbar-thumb{background:#c4cec6;border-radius:99px;border:3px solid var(--bg)}
+  ::-webkit-scrollbar-thumb:hover{background:var(--green-deep)}
+  button{font-family:inherit}
+  .hidden{display:none !important}
 
-  .stage{position:relative;z-index:1;width:100%;max-width:820px;display:flex;flex-direction:column;gap:18px}
+  @keyframes arBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  @keyframes arPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 4px var(--bg),0 0 0 0 rgba(185,255,0,.55)}50%{transform:scale(1.3);box-shadow:0 0 0 4px var(--bg),0 0 22px 3px rgba(185,255,0,.6)}}
+  @keyframes arRise{from{opacity:0;transform:translate(50%,-32%)}to{opacity:1;transform:translate(50%,-50%)}}
+  @keyframes arSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 
-  /* ---------- header ---------- */
-  .head{padding-left:104px}
-  .title-in{
-    width:100%;font-family:var(--serif);font-size:30px;font-weight:500;line-height:1.15;
-    letter-spacing:-.01em;color:var(--ink);background:transparent;border:none;padding:2px 0;outline:none;
-  }
-  .title-in::placeholder{color:var(--ink-faint)}
-  .folio{display:flex;align-items:baseline;gap:9px;margin-top:6px}
-  .folio .d{font-family:var(--serif);font-size:13px;color:var(--ink-soft);letter-spacing:.04em}
-  .folio .bar{width:18px;height:1px;background:var(--line);display:inline-block;transform:translateY(-4px)}
-  .folio .wc{font-size:12px;color:var(--ink-faint);letter-spacing:.04em}
+  .app{min-height:100vh;display:flex;flex-direction:column;background:var(--bg)}
 
-  /* ---------- workspace: the pine + the page ---------- */
-  .work{display:flex;align-items:stretch}
-  .forest{position:relative;flex:none;width:104px}
-  /* trunk + rising sap, centered on x = right:35px */
-  #trunk{position:absolute;right:34px;width:3px;border-radius:3px;
-    background:linear-gradient(var(--bark),var(--bark-deep));transition:top .6s ease,height .6s ease}
-  #sap{position:absolute;right:34px;width:3px;border-radius:3px;
-    background:linear-gradient(var(--fern),var(--fern-deep));box-shadow:0 0 11px -1px var(--glow);
-    transition:top .8s ease,height .8s ease;opacity:0}
-  .forest.on #sap{opacity:1}
+  header{position:sticky;top:0;z-index:7;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 26px;height:60px;background:var(--head);border-bottom:3px solid var(--green)}
+  .hl{display:flex;align-items:center;gap:14px}
+  .vr{width:1px;height:22px;background:rgba(255,255,255,.18);display:block}
+  .wordmark{display:flex;align-items:center;line-height:0}
+  .brand{font:600 11px var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--green)}
+  .hbtn{display:flex;align-items:center;gap:9px;font:500 12.5px var(--sans);color:#eaf3ee;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:6px 11px;cursor:pointer;transition:background .15s,border-color .15s}
+  .hbtn:hover{border-color:var(--green);background:rgba(5,229,96,.1)}
+  .hbtn.active{background:rgba(5,229,96,.12)}
+  .hbtn .lbl{max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hbtn .car{font-size:9px;color:#7d8f93}
+  .newbtn{display:flex;align-items:center;gap:7px;font:600 12.5px var(--sans);color:var(--head);background:var(--green);border:none;border-radius:8px;padding:7px 13px;cursor:pointer;transition:filter .15s,transform .15s}
+  .newbtn:hover{filter:brightness(1.05);transform:translateY(-1px)}
+  .hr{display:flex;align-items:center;gap:11px}
+  .capbtn{display:flex;align-items:center;gap:8px;font:500 11.5px var(--sans);color:#cfe6d8;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:6px 13px;cursor:pointer;transition:border-color .15s,background .15s}
+  .capbtn:hover{border-color:var(--green);background:rgba(5,229,96,.1)}
+  .capbtn .sq{width:8px;height:8px;border-radius:2px;display:block}
+  .savechip{display:flex;align-items:center;gap:7px;font:500 11.5px var(--sans);color:#7d8f93}
+  .savechip .ci{width:7px;height:7px;border-radius:50%;display:block;transition:background .3s}
 
-  .branch{position:absolute;right:35px;transform:translate(50%,-50%);line-height:0}
-  .branch svg path{stroke:var(--fern-deep);stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
-  .branch.fresh svg path{stroke:var(--sage)}
-  .branch.sprout{animation:sprout .55s var(--pop)}
-  @keyframes sprout{from{opacity:0;transform:translate(50%,-50%) scale(.2)}
-    to{opacity:1;transform:translate(50%,-50%) scale(1)}}
-  .tlabel{position:absolute;transform:translateY(-50%);font-family:var(--serif);font-size:11.5px;
-    color:var(--ink-soft);text-align:right;white-space:nowrap}
+  .hint{flex:none;display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 20px;background:#e7f7ea;border-bottom:1px solid #cdeed5;animation:arSlide .3s ease}
+  .hint span{font:500 13px var(--sans);color:#15433a}
+  .hint .go{font:600 12.5px var(--sans);color:var(--head);background:var(--green);border:none;border-radius:7px;padding:7px 14px;cursor:pointer}
+  .hint .no{font:500 12.5px var(--sans);color:#5b7a6a;background:transparent;border:none;cursor:pointer;padding:6px 8px}
 
-  /* forest floor */
-  .soil{position:absolute;right:35px;bottom:6px;width:58px;height:18px;transform:translateX(50%);
-    background:radial-gradient(50% 110% at 50% 0,var(--soil),transparent 72%);border-radius:50%;opacity:.85}
+  main{flex:1;display:flex;justify-content:center;padding:36px 24px 130px}
+  .stage{width:100%;max-width:912px;display:flex;flex-direction:column;gap:22px}
 
-  /* the growth leader — the only nudge control */
-  .bud{position:absolute;right:35px;width:14px;height:14px;transform:translate(50%,-50%);
-    border:none;cursor:pointer;padding:0;background:transparent;outline:none;z-index:3;
-    transition:top .8s ease}
-  .bud::after{content:"";position:absolute;inset:0;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
-    background:radial-gradient(circle at 40% 30%,var(--sage),var(--fern-deep));
-    box-shadow:0 0 0 3px var(--page),0 0 16px -1px var(--glow);transition:.3s}
-  .forest.on .bud::after{animation:breathe 5s ease-in-out infinite}
-  .forest.off .bud::after{background:transparent;border:2px solid var(--ink-faint);
-    box-shadow:0 0 0 3px var(--page);inset:1px}
-  .forest.due .bud::after{animation:pulse 1.5s ease-in-out infinite}
-  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
-  @keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 3px var(--page),0 0 0 0 var(--glow)}
-    50%{transform:scale(1.35);box-shadow:0 0 0 3px var(--page),0 0 28px 3px var(--glow)}}
-  .bud-cap{position:absolute;right:54px;font-size:11px;color:var(--ink-soft);letter-spacing:.03em;
-    white-space:nowrap;text-align:right;pointer-events:none;transform:translateY(-50%);transition:top .8s ease}
+  .titlerow{display:flex;align-items:flex-start;gap:16px;padding-left:146px}
+  .titlerow .accent{flex:none;width:5px;align-self:stretch;min-height:46px;background:var(--green);border-radius:3px;margin-top:3px}
+  #title{width:100%;font-family:var(--disp);font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1.12;color:var(--head);background:transparent;border:none;padding:0;outline:none}
+  .meta{display:flex;align-items:center;gap:14px;margin-top:9px;font:500 12px var(--sans);letter-spacing:.04em;color:var(--soft);flex-wrap:wrap}
+  .meta .dash{width:14px;height:1px;background:#c4cec6;display:block}
+  .meta .last{color:var(--faint)}
 
-  /* ---------- the page ---------- */
-  .sheet{position:relative;flex:1;min-width:0;background:var(--page);border:1px solid var(--line);
-    border-radius:var(--r);box-shadow:0 26px 60px -40px rgba(0,0,0,.7);overflow:hidden}
-  textarea#notes{
-    display:block;width:100%;min-height:50vh;padding:28px 30px;
-    font-family:var(--serif);font-size:17px;font-weight:400;line-height:1.75;
-    color:var(--ink);background:transparent;border:none;outline:none;resize:vertical;
-    scrollbar-width:thin;scrollbar-color:var(--fern-deep) transparent;
-  }
-  textarea#notes::-webkit-scrollbar{width:11px}
-  textarea#notes::-webkit-scrollbar-thumb{background:linear-gradient(var(--fern-deep),var(--moss));
-    border-radius:99px;border:3px solid var(--page)}
-  textarea#notes::-webkit-scrollbar-thumb:hover{background:var(--fern)}
-  textarea#notes::placeholder{color:var(--ink-faint);font-style:italic}
+  .work{display:flex;align-items:stretch;gap:26px}
+  .rail{position:relative;flex:none;width:120px}
+  .rail .tick{position:absolute;right:33px;height:1px;display:block}
+  .rail .pend{position:absolute;right:30px;width:2px;background:#cdd6cf;border-radius:2px}
+  .rail .built{position:absolute;right:30px;width:2px;background:var(--ink);border-radius:2px}
+  .rail .fill{position:absolute;right:29px;width:4px;background:var(--green);border-radius:4px;box-shadow:0 0 10px rgba(5,229,96,.55);transition:top .6s ease,height .6s ease}
+  .rail .foot{position:absolute;right:30px;top:90%;transform:translate(50%,-50%);width:16px;height:16px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1.5px}
+  .rail .foot span{border-radius:1px}
+  .node{position:absolute;right:31px;transform:translate(50%,-50%);width:9px;height:9px;background:var(--ink);border:2px solid var(--bg);border-radius:2px;animation:arRise .45s ease;display:block}
+  .nodelbl{position:absolute;right:47px;transform:translateY(-50%);font:500 11px var(--sans);color:var(--soft);white-space:nowrap}
+  #gaugeBtn{position:absolute;right:30px;transform:translate(50%,-50%);width:18px;height:18px;padding:0;border:none;background:transparent;cursor:pointer;z-index:3;transition:top .6s ease}
+  #gaugeBtn .g{display:block;width:100%;height:100%;border-radius:3px;box-shadow:0 0 0 4px var(--bg)}
+  #railCap{position:absolute;right:47px;transform:translateY(-50%);font:500 11px var(--sans);color:var(--faint);white-space:nowrap;transition:top .6s ease}
 
-  .savebar{display:flex;align-items:center;gap:10px;padding:0 6px 0 104px;font-size:12.5px;color:var(--ink-soft)}
-  .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-faint);display:inline-block;transition:.3s}
-  .dot.on{background:var(--good);box-shadow:0 0 8px -1px var(--good)}
-  .savebar .sep{flex:1}
+  .sheet{flex:1;min-width:0;background:#fff;border:1px solid var(--line);border-top:3px solid var(--head);border-radius:5px;box-shadow:0 1px 2px rgba(25,45,56,.04),0 22px 48px -34px rgba(25,45,56,.28)}
+  #notes{display:block;width:100%;min-height:60vh;padding:32px 36px;font-family:var(--sans);font-size:16.5px;font-weight:400;line-height:1.78;color:var(--ink2);background:transparent;border:none;resize:vertical;outline:none}
 
-  /* ---------- bottom dock ---------- */
-  .dock{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:8;
-    display:flex;gap:6px;padding:7px;background:color-mix(in srgb,var(--panel) 90%,transparent);
-    border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(10px);
-    box-shadow:0 18px 40px -22px rgba(0,0,0,.8)}
-  .tool{appearance:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:600;
-    color:var(--ink);background:transparent;border:none;border-radius:12px;padding:9px 13px;
-    display:flex;align-items:center;gap:7px;white-space:nowrap;
-    transition:transform .22s var(--pop),background .16s,box-shadow .22s}
-  .tool svg{width:16px;height:16px;stroke:var(--ink-soft);fill:none;stroke-width:1.7;
-    stroke-linecap:round;stroke-linejoin:round;transition:.16s}
-  .tool:hover{transform:translateY(-5px) scale(1.07);background:color-mix(in srgb,var(--fern) 16%,transparent);
-    box-shadow:0 10px 18px -10px var(--glow)}
-  .tool:hover svg{stroke:var(--fern)}
-  .tool:active{transform:translateY(-1px) scale(.95);transition:transform .09s ease}
-  .tool.icon{padding:9px}
-  .dock .div{width:1px;background:var(--line);margin:5px 2px}
+  .dock{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:8;display:flex;align-items:center;gap:5px;padding:7px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 44px -24px rgba(25,45,56,.5)}
+  .tool{display:flex;align-items:center;gap:8px;font:600 13px var(--sans);color:var(--ink);background:transparent;border:none;border-radius:9px;padding:10px 13px;cursor:pointer;white-space:nowrap;flex:none;transition:background .15s,transform .15s}
+  .tool:hover{background:#f0f3ef;transform:translateY(-1px)}
+  .tool.primary{color:#fff;background:var(--ink);padding:10px 15px}
+  .tool.primary:hover{background:var(--green-deep)}
+  .tool .sd{width:8px;height:8px;border-radius:50%;display:block}
+  .dock .vr2{width:1px;height:22px;background:var(--line);margin:0 3px;display:block}
+  .iconbtn{display:flex;align-items:center;justify-content:center;background:transparent;border:none;border-radius:9px;padding:10px;cursor:pointer;transition:background .15s,transform .15s}
+  .iconbtn:hover{background:#f0f3ef;transform:translateY(-1px)}
 
-  /* ---------- settings drawer ---------- */
-  .drawer{margin-left:104px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-    padding:20px;display:none;flex-direction:column;gap:16px}
-  .drawer.open{display:flex}
-  .drawer h2{font-family:var(--serif);font-weight:500;font-size:19px;margin:0;letter-spacing:-.01em}
-  .field{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .field label{font-size:13.5px;color:var(--ink-soft);min-width:160px}
-  .field input[type=number]{width:88px;padding:8px 10px;font-size:14px;border:1px solid var(--line);
-    border-radius:10px;background:var(--bg);color:var(--ink);outline:none}
-  .field input[type=number]:focus{border-color:var(--fern)}
-  .btn{appearance:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:600;
-    padding:8px 14px;border-radius:11px;border:1px solid var(--line);background:var(--page);
-    color:var(--ink);transition:transform .22s var(--pop),border-color .16s,box-shadow .22s}
-  .btn:hover{border-color:var(--fern);transform:translateY(-3px) scale(1.04);box-shadow:0 8px 16px -10px var(--glow)}
-  .btn:active{transform:translateY(0) scale(.96);transition:transform .09s ease}
-  .note{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin:0}
-  .note.warn{color:var(--warn)}
+  .panel{position:fixed;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--line);border-radius:9px;box-shadow:0 28px 64px -28px rgba(25,45,56,.45);padding:22px}
+  .panel h2{margin:0;font-family:var(--disp);font-weight:700;font-size:18px;letter-spacing:-.01em;color:var(--ink)}
+  .panel .x{background:transparent;border:none;font-size:17px;color:var(--faint);cursor:pointer;line-height:1;padding:2px 4px}
+  .phead{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  #settingsPanel{bottom:88px;z-index:9;width:min(456px,calc(100vw - 32px))}
+  #syncPanel{bottom:88px;z-index:10;width:min(520px,calc(100vw - 32px));max-height:calc(100vh - 130px);overflow-y:auto}
 
-  .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(16px);
-    background:var(--ink);color:var(--bg);font-size:13px;padding:9px 16px;border-radius:999px;
-    opacity:0;transition:.28s;pointer-events:none;z-index:20}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .field{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .field label{font:500 13px var(--sans);color:var(--soft);flex:1;min-width:150px}
+  .field input[type=number]{width:84px;padding:8px 10px;font:500 14px var(--sans);border:1px solid var(--line2);border-radius:8px;background:#f7f9f6;color:var(--ink)}
+  .field .unit{font:500 13px var(--sans);color:var(--faint)}
+  .apply{font:600 13px var(--sans);color:var(--ink);background:var(--lime);border:none;border-radius:8px;padding:9px 16px;cursor:pointer;transition:filter .15s}
+  .apply:hover{filter:brightness(.94)}
+  .row{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}
+  .ghost{font:600 12.5px var(--sans);color:var(--ink);background:#f0f3ef;border:1px solid var(--line);border-radius:8px;padding:9px 14px;cursor:pointer;transition:border-color .15s}
+  .ghost:hover{border-color:#9fb0a8}
+  .danger{font:600 12.5px var(--sans);color:#8a3b2e;background:transparent;border:1px solid #e3d2cd;border-radius:8px;padding:9px 14px;cursor:pointer;transition:background .15s}
+  .danger:hover{background:#faf0ee}
+  .note{margin:0;font:400 12px var(--sans);line-height:1.55;color:var(--faint)}
 
-  @media (max-width:560px){
-    .head,.savebar{padding-left:62px}
-    .drawer{margin-left:62px}
-    .forest{width:62px}
-    #trunk,#sap{right:21px}
-    .branch{right:22px}
-    .soil{right:22px}
-    .bud{right:22px}
-    .tlabel{display:none}
-    .bud-cap{display:none}
-    .title-in{font-size:25px}
-    textarea#notes{padding:22px 18px;font-size:16px}
-    .tool span{display:none}.tool{padding:9px}
+  #syncPanel p.desc{margin:0 0 14px;font:400 12.5px var(--sans);line-height:1.5;color:var(--soft)}
+  .syncstatus{display:flex;align-items:center;gap:9px;padding:10px 13px;margin-bottom:16px;border-radius:8px}
+  .syncstatus .d{width:8px;height:8px;border-radius:50%;display:block;flex:none}
+  .syncstatus .t{font:500 12.5px var(--sans)}
+  .lab{display:block;margin-bottom:5px;font:600 10.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#7d8f93}
+  .inp{width:100%;padding:10px 12px;font:500 13px var(--sans);border:1px solid var(--line2);border-radius:8px;background:#f7f9f6;color:var(--ink);outline:none}
+  .inp:focus{border-color:var(--green-deep)}
+  .grid2{display:flex;gap:12px;margin-bottom:12px}
+  .grid2 > div{flex:1;min-width:0}
+  .toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;margin-bottom:9px;padding:11px 13px;background:#f7f9f6;border:1px solid var(--line);border-radius:8px;cursor:pointer;text-align:left}
+  .toggle span.lt{font:500 13px var(--sans);color:var(--ink2)}
+  .toggle span.pill{flex:none;font:700 11px var(--sans);border-radius:999px;padding:3px 11px}
+  .writes{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:9px 12px;background:var(--head);border-radius:7px;overflow:hidden}
+  .writes .k{font:600 10px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--green);flex:none}
+  .writes .v{font:500 12px var(--sans);color:#cfe6d8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .syncgo{display:flex;align-items:center;gap:8px;font:600 13px var(--sans);color:var(--head);background:var(--green);border:none;border-radius:8px;padding:10px 17px;cursor:pointer;transition:filter .15s}
+  .syncgo:hover{filter:brightness(1.05)}
+
+  #sessionsPanel{position:fixed;left:26px;top:70px;z-index:12;width:min(340px,calc(100vw - 32px));max-height:calc(100vh - 100px);display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 28px 64px -26px rgba(25,45,56,.5);animation:arSlide .18s ease;overflow:hidden}
+  .sp-head{flex:none;display:flex;align-items:center;justify-content:space-between;padding:15px 16px 12px;border-bottom:1px solid #eef1ee}
+  .sp-head .ti{font:700 13px var(--disp);letter-spacing:.02em;color:var(--head)}
+  .sp-head .ct{font:500 11px var(--sans);color:var(--faint)}
+  .sp-list{flex:1;min-height:0;overflow-y:auto;padding:6px}
+  .srow{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:8px;cursor:pointer;border-left:3px solid transparent;transition:background .12s}
+  .srow:hover{background:#f2f7f3}
+  .srow.active{background:#eef7f0;border-left-color:var(--green)}
+  .srow .body{flex:1;min-width:0}
+  .srow .st{font:600 13.5px var(--sans);color:var(--head);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .srow .sm{display:flex;align-items:center;gap:8px;margin-top:3px;font:500 11px var(--sans);color:var(--faint)}
+  .srow .sm .dot3{width:3px;height:3px;border-radius:50%;background:#cdd6cf;display:block}
+  .srow .del{flex:none;display:flex;align-items:center;justify-content:center;width:26px;height:26px;background:transparent;border:none;border-radius:6px;color:#b7c0bb;cursor:pointer;transition:background .12s,color .12s}
+  .srow .del:hover{background:#faf0ee;color:#8a3b2e}
+  .sp-foot{flex:none;padding:10px;border-top:1px solid #eef1ee}
+  .sp-foot .new{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font:600 13px var(--sans);color:var(--head);background:var(--green);border:none;border-radius:8px;padding:11px;cursor:pointer;transition:filter .15s}
+  .sp-foot .new:hover{filter:brightness(1.05)}
+
+  #toast{position:fixed;left:50%;bottom:152px;transform:translateX(-50%);z-index:20;background:var(--head);color:var(--bg);font:500 12.5px var(--sans);padding:9px 16px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none}
+  #toast.show{opacity:1}
+
+  @media (max-width:640px){
+    .titlerow{padding-left:0}
+    .work{gap:12px}
+    .rail{width:74px}
+    #title{font-size:26px}
+    .tool .tl{display:none}
+    .tool{padding:10px}
+    .tool.primary{padding:10px 12px}
   }
 </style>
 </head>
 <body>
-<div class="stage">
+<div class="app">
 
-  <div class="head">
-    <input class="title-in" id="title" placeholder="Untitled" autocomplete="off">
-    <div class="folio">
-      <span class="d" id="date"></span>
-      <span class="bar"></span>
-      <span class="wc" id="wc">0 words</span>
+  <header>
+    <div class="hl">
+      <span class="wordmark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#05e560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h9l3 3v13H6z"></path><path d="M9 9h6"></path><path d="M9 13h6"></path><path d="M9 17h4"></path></svg>
+      </span>
+      <span class="brand">Notebook</span>
+      <span class="vr"></span>
+      <button class="hbtn" id="sessionsBtn" aria-label="Sessions">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#05e560" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h10"></path></svg>
+        <span class="lbl" id="sessionLabel">Today</span>
+        <span class="car">▾</span>
+      </button>
+      <button class="newbtn" id="newBtn">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#15252f" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+        <span>New session</span>
+      </button>
     </div>
-  </div>
-
-  <div class="work">
-    <aside class="forest off" id="rail">
-      <div id="trunk"></div>
-      <div id="sap"></div>
-      <div id="nodes"></div>
-      <div class="soil"></div>
-      <button class="bud" id="nudgeBtn" aria-label="Check-in nudges"></button>
-      <span class="bud-cap" id="orbCap">tap to start</span>
-    </aside>
-    <div class="sheet">
-      <textarea id="notes" placeholder="Start typing — everything autosaves to this browser. Drop a Time stamp to sprout a branch on the pine; the bud at the top glows when your next check-in is due."></textarea>
+    <div class="hr">
+      <button class="capbtn" id="capBtn">
+        <span class="sq" id="nudgeDot"></span>
+        <span id="capLabelTop">tap to start</span>
+      </button>
+      <div class="savechip">
+        <span class="ci" id="savedDot"></span>
+        <span id="savedText">autosaves</span>
+      </div>
     </div>
+  </header>
+
+  <div class="hint hidden" id="hintBar">
+    <span id="hintText"></span>
+    <button class="go" id="hintGo">Start today’s session</button>
+    <button class="no" id="hintNo">Not now</button>
   </div>
 
-  <div class="savebar">
-    <span class="dot" id="saveDot"></span><span id="saveTxt">saved</span>
-    <span class="sep"></span>
-    <span id="lastTxt">no notes yet</span>
+  <main>
+    <div class="stage">
+
+      <div class="titlerow">
+        <span class="accent"></span>
+        <div style="flex:1;min-width:0">
+          <input id="title" placeholder="Untitled" autocomplete="off" spellcheck="false">
+          <div class="meta">
+            <span id="dateStr"></span>
+            <span class="dash"></span>
+            <span id="wordsText">0 words</span>
+            <span class="dash"></span>
+            <span class="last" id="lastText">no notes yet</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="work">
+        <aside class="rail" id="rail">
+          <!-- ticks, bars, nodes, gauge injected here -->
+          <div class="foot"><span style="background:#192d38"></span><span></span><span></span><span style="background:#192d38"></span></div>
+          <div class="pend" id="pendBar"></div>
+          <div class="built" id="builtBar"></div>
+          <div class="fill" id="fillBar"></div>
+          <div id="nodes"></div>
+          <button id="gaugeBtn" aria-label="Check-in"><span class="g" id="gaugeFace"></span></button>
+          <span id="railCap">tap to start</span>
+        </aside>
+        <div class="sheet">
+          <textarea id="notes" spellcheck="true" placeholder="Start typing — everything autosaves to this browser. Use “Time stamp” to log the moment; the scale on the left builds a marker for each one, and the leader at the top turns green when your next check-in is due."></textarea>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="dock">
+    <button class="tool primary" id="stampBtn">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#05e560" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+      <span class="tl">Time stamp</span>
+    </button>
+    <button class="tool" id="exportBtn">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5b6b73" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"></path><path d="M8 11l4 4 4-4"></path><path d="M5 19h14"></path></svg>
+      <span class="tl">Export .md</span>
+    </button>
+    <button class="tool" id="copyBtn">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5b6b73" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h8"></path></svg>
+      <span class="tl">Copy</span>
+    </button>
+    <button class="tool" id="syncBtn">
+      <span class="sd" id="syncDotDock"></span>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5b6b73" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 .5-9 6 6 0 0 0-11.6-1.6A4 4 0 0 0 6.5 19z"></path><path d="M12 17v-5"></path><path d="M9.5 14 12 11.5 14.5 14"></path></svg>
+      <span class="tl" id="syncBtnLabel">Sync</span>
+    </button>
+    <span class="vr2"></span>
+    <button class="iconbtn" id="gearBtn" aria-label="Settings">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#5b6b73" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2l-.3-2.5H9.7l-.3 2.5a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12a7 7 0 0 0 .1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.3 2.5h4.6l.3-2.5a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5A7 7 0 0 0 19 12z"></path></svg>
+    </button>
   </div>
 
-  <div class="drawer" id="drawer">
-    <h2>Settings</h2>
+  <div class="panel hidden" id="settingsPanel">
+    <div class="phead">
+      <h2>Check-in nudges</h2>
+      <button class="x" id="settingsClose" aria-label="Close">✕</button>
+    </div>
     <div class="field">
-      <label for="interval">Nudge me every (minutes)</label>
+      <label for="interval">Remind me every</label>
       <input type="number" id="interval" min="5" max="480" step="5" value="60">
-      <button class="btn" id="applyInterval">Apply</button>
+      <span class="unit">min</span>
+      <button class="apply" id="applyInterval">Apply</button>
     </div>
-    <div class="field">
-      <button class="btn" id="testBtn">Send a test nudge in 5s</button>
-      <button class="btn" id="disableBtn">Turn nudges off</button>
+    <div class="row">
+      <button class="ghost" id="testBtn">Send a test nudge in 5s</button>
+      <button class="danger" id="disableBtn">Turn nudges off</button>
     </div>
     <p class="note" id="capNote"></p>
   </div>
 
-</div>
+  <div class="panel hidden" id="syncPanel">
+    <div class="phead">
+      <h2>Sync to GitHub</h2>
+      <button class="x" id="syncClose" aria-label="Close">✕</button>
+    </div>
+    <p class="desc">Commits the open session as Markdown to your repo so Obsidian can ingest it from the inbox folder.</p>
+    <div class="syncstatus" id="syncStatus">
+      <span class="d" id="syncStatusDot"></span>
+      <span class="t" id="syncStatusLine"></span>
+    </div>
 
-<div class="dock">
-  <button class="tool" id="stampBtn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Time stamp</span></button>
-  <button class="tool" id="exportBtn"><svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg><span>Export .md</span></button>
-  <button class="tool" id="copyBtn"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>Copy</span></button>
-  <span class="div"></span>
-  <button class="tool icon" id="gearBtn" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2l-.3-2.5H9.7l-.3 2.5a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12a7 7 0 0 0 .1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.3 2.5h4.6l.3-2.5a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5A7 7 0 0 0 19 12z"/></svg></button>
-</div>
+    <label class="lab">Personal access token</label>
+    <input class="inp" id="ghToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…" style="margin-bottom:14px">
 
-<div class="toast" id="toast"></div>
+    <div class="grid2">
+      <div><label class="lab">Owner</label><input class="inp" id="ghOwner" spellcheck="false"></div>
+      <div><label class="lab">Repository</label><input class="inp" id="ghRepo" spellcheck="false"></div>
+    </div>
+    <div class="grid2" style="margin-bottom:16px">
+      <div><label class="lab">Branch</label><input class="inp" id="ghBranch" spellcheck="false"></div>
+      <div><label class="lab">Folder</label><input class="inp" id="ghFolder" spellcheck="false"></div>
+    </div>
+
+    <button class="toggle" id="autoToggle">
+      <span class="lt">Auto-sync after edits &amp; on session switch</span>
+      <span class="pill" id="autoPill"></span>
+    </button>
+    <button class="toggle" id="frontToggle" style="margin-bottom:14px">
+      <span class="lt">Add Obsidian frontmatter (title, date, tags)</span>
+      <span class="pill" id="frontPill"></span>
+    </button>
+
+    <div class="writes"><span class="k">Writes</span><span class="v" id="filePreview"></span></div>
+
+    <div class="row">
+      <button class="syncgo" id="syncNow">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#15252f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 .5-9 6 6 0 0 0-11.6-1.6A4 4 0 0 0 6.5 19z"></path><path d="M12 17v-5"></path><path d="M9.5 14 12 11.5 14.5 14"></path></svg>
+        <span>Sync now</span>
+      </button>
+      <button class="ghost" id="saveSync">Save settings</button>
+      <button class="danger" id="forgetToken">Forget token</button>
+    </div>
+    <p class="note">Your token is stored only in this browser. Use a <strong style="color:#5b6b73">fine-grained PAT</strong> limited to the Transfer repo with <strong style="color:#5b6b73">Contents: Read and write</strong> — nothing more.</p>
+  </div>
+
+  <div class="hidden" id="sessionsPanel">
+    <div class="sp-head">
+      <span class="ti">SESSIONS</span>
+      <span class="ct" id="sessionCount"></span>
+    </div>
+    <div class="sp-list" id="sessionList"></div>
+    <div class="sp-foot">
+      <button class="new" id="newBtn2">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#15252f" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+        <span>New session</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+</div>
 
 <script>
 (function(){
   "use strict";
-  var $=function(id){return document.getElementById(id)};
+  var $=function(id){return document.getElementById(id);};
 
-  // ---------- persistence ----------
-  var K={notes:"nb_notes",title:"nb_title",interval:"nb_interval",last:"nb_last",on:"nb_on",anchor:"nb_anchor"};
+  // ---------- geometry ----------
+  var G={GROUND:90, BASE:5, STEP:8.5, MAX:8};
+  var RE=/^[ \t]*##[ \t]+(\d{1,2}:\d{2})\b/gm;
+  var K={sessions:"nb_sessions_v1",current:"nb_current_v1",interval:"nb_interval",on:"nb_on",anchor:"nb_anchor",notes:"nb_notes",title:"nb_title",last:"nb_last"};
+
+  function ls(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function put(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  function p2(n){return (n<10?"0":"")+n;}
+  function fmtDate(d){var M=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];return d.getFullYear()+" / "+M[d.getMonth()]+" / "+p2(d.getDate());}
+  function isoDate(ts){var d=new Date(ts||Date.now());return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());}
+  function hhmm(){var d=new Date();return p2(d.getHours())+":"+p2(d.getMinutes());}
+  function clock(ts){var d=new Date(ts);return p2(d.getHours())+":"+p2(d.getMinutes());}
+  function uid(){return "s"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+  function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+  function relDay(ts){
+    var d=new Date(ts), n=new Date();
+    var sd=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+    var sn=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+    var diff=Math.round((sn-sd)/86400000);
+    if(diff===0) return "Today"; if(diff===1) return "Yesterday";
+    var WD=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], M=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    if(diff>1&&diff<7) return WD[d.getDay()];
+    return d.getDate()+" "+M[d.getMonth()];
+  }
+  function isToday(ts){return relDay(ts)==="Today";}
+  function relMin(ts){var m=Math.floor((Date.now()-ts)/60000);return m<1?"just now":(m+" min ago");}
+
+  // ---------- state ----------
   var notes=$("notes"), title=$("title");
-  notes.value = localStorage.getItem(K.notes) || "";
-  title.value = localStorage.getItem(K.title) || "";
-  var interval = parseInt(localStorage.getItem(K.interval)||"60",10);
-  $("interval").value = interval;
+  var SS=[], CUR=null;
+  var interval=parseInt(ls(K.interval)||"60",10); if(isNaN(interval)||interval<5) interval=60;
+  var nudgesOn=ls(K.on)==="1";
+  var ghAuto=ls("nb_gh_auto")==="1";
+  var ghFront=ls("nb_gh_front")!=="0";
+  var syncState=null; // setup|ready|syncing|ok|err
+  var syncedAt=0, syncErr="";
+  var newestY=G.GROUND-G.BASE, gaugeTopN=G.GROUND-G.BASE-G.STEP*0.95;
+  var hasTrigger=(typeof Notification!=="undefined")&&("TimestampTrigger" in window);
+  var swReg=null, pageTimer=null;
+  var saveT, savedT, lastT, growthT, autoT, toastT, stampRendered=-1;
 
-  function save(){
-    localStorage.setItem(K.notes, notes.value);
-    localStorage.setItem(K.title, title.value);
-    flashSaved();
+  $("interval").value=interval;
+
+  // ---------- session store ----------
+  function loadStore(){
+    var arr=[]; try{arr=JSON.parse(ls(K.sessions)||"[]");}catch(e){arr=[];}
+    if(!Array.isArray(arr)) arr=[];
+    if(arr.length===0){
+      arr=[{id:uid(), title:ls(K.title)||"", body:ls(K.notes)||"", created:Date.now(), edited:(parseInt(ls(K.last)||"0",10)||Date.now())}];
+    }
+    SS=arr;
+    var cur=ls(K.current);
+    if(!cur || !SS.some(function(x){return x.id===cur;})){ var sorted=SS.slice().sort(function(a,b){return b.created-a.created;}); cur=sorted[0].id; }
+    CUR=cur; persist();
   }
-  var saveT;
-  function onEdit(){ localStorage.setItem(K.last, Date.now()); clearTimeout(saveT); saveT=setTimeout(save,250); refreshLast(); wordCount(); renderForest(); }
-  notes.addEventListener("input", onEdit);
-  title.addEventListener("input", function(){ clearTimeout(saveT); saveT=setTimeout(save,250); });
+  function persist(){ put(K.sessions,JSON.stringify(SS)); put(K.current,CUR); }
+  function curObj(){ if(!SS.length) return null; var f=SS.filter(function(x){return x.id===CUR;})[0]; return f||SS[SS.length-1]; }
+  function countLabel(){ return SS.length+(SS.length===1?" session":" sessions"); }
+  function labelFor(s){ if(!s) return "Today"; var d=relDay(s.created), t=(s.title&&s.title.trim()); return t? d+" · "+t : d; }
 
-  var savedDotT;
-  function flashSaved(){
-    $("saveTxt").textContent="saved"; $("saveDot").classList.add("on");
-    clearTimeout(savedDotT); savedDotT=setTimeout(function(){$("saveDot").classList.remove("on")},1200);
+  function loadCurrentIntoEditor(){ var s=curObj(); notes.value=s?s.body:""; title.value=s?s.title:""; }
+  function flush(){ var s=curObj(); if(!s) return; s.body=notes.value; s.title=title.value; persist(); }
+
+  function buildSessionList(){
+    var wrap=$("sessionList"); wrap.innerHTML="";
+    var sorted=SS.slice().sort(function(a,b){return b.created-a.created;});
+    sorted.forEach(function(s){
+      var b=(s.body||"").trim(), w=b?b.split(/\s+/).length:0, active=(s.id===CUR);
+      var row=document.createElement("div");
+      row.className="srow"+(active?" active":"");
+      row.innerHTML=
+        '<div class="body">'+
+          '<div class="st">'+esc((s.title&&s.title.trim())||"Untitled")+'</div>'+
+          '<div class="sm"><span style="color:'+(isToday(s.created)?"#0a8f46":"#93a0a3")+'">'+relDay(s.created)+'</span>'+
+          '<span class="dot3"></span><span>'+w+(w===1?" word · ":" words · ")+clock(s.created)+'</span></div>'+
+        '</div>'+
+        '<button class="del" aria-label="Delete session"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"></path><path d="M9 7V5h6v2"></path><path d="M6 7l1 12h10l1-12"></path></svg></button>';
+      row.addEventListener("click", function(){ switchSession(s.id); });
+      row.querySelector(".del").addEventListener("click", function(e){ e.stopPropagation(); deleteSession(s.id); });
+      wrap.appendChild(row);
+    });
+    $("sessionCount").textContent=countLabel();
   }
 
-  // ---------- word count ----------
-  function wordCount(){
-    var w=notes.value.trim(); var n=w?w.split(/\s+/).length:0;
-    $("wc").textContent = n+(n===1?" word":" words");
+  function afterLoad(){
+    var s=curObj();
+    $("dateStr").textContent=fmtDate(new Date(s.created));
+    $("sessionLabel").textContent=labelFor(s);
+    buildSessionList();
+    recompute(); refreshLast(); renderSyncBits();
   }
-  wordCount();
 
-  // ---------- date / last-noted ----------
-  function p(n){return(n<10?"0":"")+n}
-  function todayStr(){var d=new Date();return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}
-  function hhmm(){var d=new Date();return p(d.getHours())+":"+p(d.getMinutes());}
-  $("date").textContent = todayStr();
+  function newSession(){
+    var prev=curObj();
+    flush();
+    if(ghAuto && prev) syncSession(prev,{});
+    var s={id:uid(), title:"", body:"", created:Date.now(), edited:Date.now()};
+    SS.push(s); CUR=s.id; persist();
+    loadCurrentIntoEditor();
+    $("sessionsPanel").classList.add("hidden");
+    $("hintBar").classList.add("hidden");
+    afterLoad(); title.focus(); toast("New session started");
+  }
+  function switchSession(id){
+    if(id===CUR){ $("sessionsPanel").classList.add("hidden"); return; }
+    var prev=curObj();
+    flush();
+    if(ghAuto && prev) syncSession(prev,{});
+    CUR=id; persist();
+    loadCurrentIntoEditor();
+    $("sessionsPanel").classList.add("hidden");
+    $("hintBar").classList.add("hidden");
+    afterLoad(); toast("Opened “"+labelFor(curObj())+"”");
+  }
+  function deleteSession(id){
+    if(window.confirm && !window.confirm("Delete this session? This can’t be undone.")) return;
+    var wasCur=(id===CUR);
+    SS=SS.filter(function(x){return x.id!==id;});
+    if(SS.length===0){ var s={id:uid(),title:"",body:"",created:Date.now(),edited:Date.now()}; SS=[s]; CUR=s.id; }
+    else if(wasCur){ CUR=SS.slice().sort(function(a,b){return b.created-a.created;})[0].id; }
+    persist();
+    if(wasCur){ loadCurrentIntoEditor(); afterLoad(); }
+    else buildSessionList();
+    toast("Session deleted");
+  }
+
+  // ---------- editing / autosave ----------
+  function scheduleSave(){ clearTimeout(saveT); saveT=setTimeout(doSave,250); }
+  function doSave(){
+    var s=curObj();
+    if(s){ s.body=notes.value; s.title=title.value; s.edited=Date.now(); persist(); }
+    $("savedText").textContent="saved"; $("savedDot").style.background="#05e560";
+    $("sessionLabel").textContent=labelFor(s); buildSessionList();
+    clearTimeout(savedT); savedT=setTimeout(function(){ $("savedText").textContent="autosaves"; $("savedDot").style.background="#c4cec6"; },1200);
+  }
+  function onNotes(){ scheduleSave(); recompute(); refreshLast(); scheduleAutoSync(); }
+  notes.addEventListener("input", onNotes);
+  title.addEventListener("input", scheduleSave);
 
   function refreshLast(){
-    var t=parseInt(localStorage.getItem(K.last)||"0",10);
-    if(!t || !notes.value.trim()){ $("lastTxt").textContent="no notes yet"; return; }
-    var s=Math.floor((Date.now()-t)/1000), m=Math.floor(s/60);
-    $("lastTxt").textContent = m<1 ? "last note just now" : "last note "+m+" min ago";
-  }
-  setInterval(refreshLast,15000); refreshLast();
-
-  // ====================================================================
-  //  THE PINE — each time-stamp sprouts a branch; the tree grows upward,
-  //  sap rises to the leader bud which glows when a check-in is due.
-  // ====================================================================
-  var STAMP_RE=/^[ \t]*##[ \t]+(\d{1,2}:\d{2})\b/gm;
-  var GROUND=88, TIERGAP=8.6, BASE=6, MAX_NODES=8;
-  var newestY=GROUND-BASE, budY=newestY-7, lastCount=-1;
-
-  function branchSvg(w){
-    var h=8;
-    return '<svg width="'+w+'" height="'+(h+4)+'" viewBox="0 0 '+w+' '+(h+4)+'">'
-         + '<path d="M2 2 L'+(w/2)+' '+(h+1)+' L'+(w-2)+' 2"/></svg>';
+    var s=curObj(); var body=notes.value.trim();
+    if(!s||!body){ $("lastText").textContent="empty session"; return; }
+    var t=s.edited||s.created; var m=Math.floor((Date.now()-t)/60000);
+    $("lastText").textContent = m<1?"saved just now":("edited "+m+" min ago");
   }
 
-  function renderForest(){
-    var times=[], m;
-    STAMP_RE.lastIndex=0;
-    while((m=STAMP_RE.exec(notes.value))!==null) times.push(m[1]);
-    var shown = times.slice(-MAX_NODES);
-    var n = shown.length;
-    var grew = (lastCount>=0 && times.length>lastCount);
+  // ---------- the scale (left rail) ----------
+  function recompute(){
+    var v=notes.value; var t=v.trim(); var w=t?t.split(/\s+/).length:0;
+    $("wordsText").textContent=w+(w===1?" word":" words");
+    RE.lastIndex=0; var m, times=[]; while((m=RE.exec(v))!==null) times.push(m[1]);
+    var shown=times.slice(-G.MAX); var n=shown.length;
 
-    if(times.length!==lastCount){
-      var html="";
-      for(var i=0;i<n;i++){
-        var y = GROUND - BASE - i*TIERGAP;                 // i=0 oldest at base, grows up
-        var w = Math.min(34, 15 + (n-1-i)*3);              // wider toward the base
-        var fresh = (i===n-1);
-        var lblRight = 35 + w/2 + 9;
-        html += '<span class="branch'+(fresh?" fresh":"")+(fresh&&grew?" sprout":"")+'" style="top:'+y.toFixed(2)+'%">'+branchSvg(w)+'</span>';
-        html += '<span class="tlabel" style="top:'+y.toFixed(2)+'%;right:'+lblRight.toFixed(1)+'px">'+shown[i]+'</span>';
+    if(times.length!==stampRendered){
+      // static ticks (once) + nodes
+      var rail=$("rail");
+      if(!rail.querySelector(".tick")){
+        for(var k=0;k<=13;k++){
+          var ty=8+k*6.3, tlen=(k%2===0?11:6), tcol=(k%2===0?"#c4cec6":"#dde3dd");
+          var tk=document.createElement("span"); tk.className="tick";
+          tk.style.top=ty.toFixed(1)+"%"; tk.style.width=tlen+"px"; tk.style.background=tcol;
+          rail.insertBefore(tk, rail.firstChild);
+        }
       }
-      $("nodes").innerHTML=html;
-      lastCount = times.length;
+      var nodesHtml="";
+      for(var i=0;i<n;i++){
+        var y=(G.GROUND-G.BASE-i*G.STEP).toFixed(2);
+        nodesHtml+='<span class="node" style="top:'+y+'%"></span>';
+        nodesHtml+='<span class="nodelbl" style="top:'+y+'%">'+shown[i]+'</span>';
+      }
+      $("nodes").innerHTML=nodesHtml;
+      stampRendered=times.length;
     }
 
-    newestY = n>0 ? (GROUND - BASE - (n-1)*TIERGAP) : (GROUND - BASE);
-    budY = newestY - TIERGAP*0.8;
-    $("trunk").style.top = budY.toFixed(2)+"%";
-    $("trunk").style.height = (GROUND - budY).toFixed(2)+"%";
-    $("nudgeBtn").style.top = budY.toFixed(2)+"%";
-    $("orbCap").style.top = budY.toFixed(2)+"%";
-    updateGrowth();
+    newestY = n>0 ? (G.GROUND-G.BASE-(n-1)*G.STEP) : (G.GROUND-G.BASE);
+    gaugeTopN = newestY-G.STEP*0.95;
+    $("builtBar").style.top=newestY.toFixed(2)+"%";
+    $("builtBar").style.height=(G.GROUND-newestY).toFixed(2)+"%";
+    $("pendBar").style.top=gaugeTopN.toFixed(2)+"%";
+    $("pendBar").style.height=(newestY-gaugeTopN).toFixed(2)+"%";
+    $("gaugeBtn").style.top=gaugeTopN.toFixed(2)+"%";
+    $("railCap").style.top=gaugeTopN.toFixed(2)+"%";
+    tickGrowth();
   }
 
-  function isOn(){ return localStorage.getItem(K.on)==="1"; }
-
-  function updateGrowth(){
-    var rail=$("rail");
-    if(!isOn()){
-      rail.className="forest off";
-      $("orbCap").textContent="tap to start";
-      $("sap").style.height="0%";
+  function tickGrowth(){
+    var face=$("gaugeFace");
+    if(!nudgesOn){
+      $("railCap").textContent="tap to start"; $("capLabelTop").textContent="tap to start";
+      $("fillBar").style.height="0%"; $("fillBar").style.top=newestY.toFixed(2)+"%";
+      face.style.animation="none"; face.style.background="transparent"; face.style.border="2px solid #9fb0a8";
+      $("nudgeDot").style.background="#c4cec6";
       return;
     }
     var gap=interval*60000;
-    var anchor=parseInt(localStorage.getItem(K.anchor)||"0",10) || Date.now();
-    var into=(Date.now()-anchor)%gap; if(into<0) into+=gap;
-    var frac=into/gap;
-    var span=newestY-budY;                         // sap climbs from newest branch up to bud
-    $("sap").style.top = (newestY - span*frac).toFixed(2)+"%";
-    $("sap").style.height = (span*frac).toFixed(2)+"%";
-    var remMin=Math.max(0,Math.round((gap-into)/60000));
-    var due = remMin<1;
-    rail.className = "forest on" + (due?" due":"");
-    $("orbCap").textContent = due ? "check-in due" : "next in "+remMin+"m";
+    var anchor=parseInt(ls(K.anchor)||"0",10)||Date.now();
+    var into=(Date.now()-anchor)%gap; if(into<0) into+=gap; var frac=into/gap;
+    var span=newestY-gaugeTopN;
+    $("fillBar").style.top=(newestY-span*frac).toFixed(2)+"%";
+    $("fillBar").style.height=(span*frac).toFixed(2)+"%";
+    var remMin=Math.max(0,Math.round((gap-into)/60000)); var due=remMin<1;
+    var lab=due?"check-in due":("next in "+remMin+"m");
+    $("railCap").textContent=lab; $("capLabelTop").textContent=lab;
+    face.style.border="none";
+    face.style.background=due?"#b9ff00":"#05e560";
+    face.style.animation=due?"arPulse 1.4s ease-in-out infinite":"arBreathe 5s ease-in-out infinite";
+    $("nudgeDot").style.background=due?"#b9ff00":"#05e560";
   }
-  setInterval(updateGrowth, 5000);
 
   // ---------- time stamp ----------
   $("stampBtn").addEventListener("click", function(){
-    var stamp="\n\n## "+hhmm()+" — ";
-    var s=notes.selectionStart, e=notes.selectionEnd, v=notes.value;
-    notes.value = v.slice(0,s)+stamp+v.slice(e);
-    var pos=s+stamp.length;
+    var s="\n\n## "+hhmm()+" — ";
+    var a=notes.selectionStart, b=notes.selectionEnd, v=notes.value;
+    notes.value=v.slice(0,a)+s+v.slice(b); var pos=a+s.length;
     notes.focus(); notes.setSelectionRange(pos,pos);
-    onEdit();
+    onNotes();
   });
 
   // ---------- export / copy ----------
   function buildMd(){
-    var t=(title.value.trim()||"Notebook");
-    return "# "+t+" — "+todayStr()+"\n\n"+notes.value.trim()+"\n";
+    var s=curObj();
+    var ti=(s&&s.title&&s.title.trim())||"Notebook";
+    var body=((s&&s.body)?s.body:notes.value).trim();
+    return "# "+ti+" — "+isoDate(s?s.created:Date.now())+"\n\n"+body+"\n";
   }
   $("exportBtn").addEventListener("click", function(){
-    var md=buildMd(), name="Notes "+todayStr()+" "+hhmm().replace(":","")+".md";
-    var blob=new Blob([md],{type:"text/markdown;charset=utf-8"});
-    var url=URL.createObjectURL(blob), a=document.createElement("a");
-    a.href=url; a.download=name; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(function(){URL.revokeObjectURL(url)},1500); toast("Saved "+name);
+    flush(); var md=buildMd(), name="Notes "+isoDate()+" "+hhmm().replace(":","")+".md";
+    try{
+      var blob=new Blob([md],{type:"text/markdown;charset=utf-8"});
+      var url=URL.createObjectURL(blob), a=document.createElement("a");
+      a.href=url; a.download=name; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){URL.revokeObjectURL(url);},1500); toast("Exported "+name);
+    }catch(e){ toast("Export blocked"); }
   });
   $("copyBtn").addEventListener("click", function(){
-    var md=buildMd();
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(md).then(function(){toast("Copied")},fb);
-    } else fb();
-    function fb(){var ta=document.createElement("textarea");ta.value=md;ta.style.position="fixed";ta.style.opacity="0";
-      document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("Copied")}catch(e){toast("Copy blocked")}document.body.removeChild(ta);}
+    flush(); var md=buildMd();
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(md).then(function(){toast("Copied to clipboard");}, fb); }
+    else fb();
+    function fb(){ try{var ta=document.createElement("textarea"); ta.value=md; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); toast("Copied to clipboard");}catch(e){toast("Copy blocked");} }
   });
 
-  // ---------- settings drawer ----------
-  $("gearBtn").addEventListener("click", function(){ $("drawer").classList.toggle("open"); });
+  // ---------- toast ----------
+  function toast(m){ var t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(function(){t.classList.remove("show");},2200); }
 
   // ====================================================================
   //  NOTIFICATIONS
   // ====================================================================
-  var swReg=null;
-  var hasTrigger = ("Notification" in window) && ("showTrigger" in Notification.prototype || "TimestampTrigger" in window);
-  var WINDOW_COUNT = 14;
-
-  function capNote(){
-    if(!("Notification" in window)){ $("capNote").className="note warn"; $("capNote").textContent="This browser can't show notifications."; return; }
-    if(hasTrigger){ $("capNote").className="note"; $("capNote").textContent="Scheduled nudges fire even when this tab or the whole browser is closed (Chrome / Edge)."; }
-    else { $("capNote").className="note warn"; $("capNote").textContent="Heads up: this browser only fires nudges while the tab stays open. For closed-tab nudges, use Chrome or Edge."; }
+  function setCapNote(){
+    var el=$("capNote");
+    if(typeof Notification==="undefined"){ el.textContent="This browser can't show notifications."; return; }
+    if(hasTrigger) el.textContent="Scheduled nudges fire even when this tab or the browser is closed (Chrome / Edge).";
+    else el.textContent="This browser only nudges while the tab stays open. Use Chrome or Edge for closed-tab nudges.";
   }
-  capNote();
-
-  async function ensureSW(){
-    if(swReg) return swReg;
-    if(!("serviceWorker" in navigator)) throw new Error("no SW");
-    swReg = await navigator.serviceWorker.register("sw.js");
-    await navigator.serviceWorker.ready;
-    return swReg;
+  function ensureSW(){
+    if(swReg) return Promise.resolve(swReg);
+    if(!("serviceWorker" in navigator)) return Promise.reject(new Error("no sw"));
+    return navigator.serviceWorker.register("sw.js").then(function(reg){ return navigator.serviceWorker.ready.then(function(){ swReg=reg; return reg; }); });
   }
-  async function clearScheduled(reg){
-    try{
-      var list = await reg.getNotifications({includeTriggered:true});
+  function clearScheduled(reg){
+    return reg.getNotifications({includeTriggered:true}).then(function(list){
       list.forEach(function(n){ if(n.tag && n.tag.indexOf("nudge")===0) n.close(); });
-    }catch(e){}
+    }).catch(function(){});
   }
-  async function scheduleNudges(){
-    var reg = await ensureSW();
-    await clearScheduled(reg);
-    var now=Date.now(), gap=interval*60000;
-    localStorage.setItem(K.anchor, String(now));
-    if(hasTrigger){
-      for(var i=1;i<=WINDOW_COUNT;i++){
-        await reg.showNotification("Notebook", {
-          tag:"nudge-"+i,
-          body:"Jot down what you're working on.",
-          requireInteraction:true,
-          showTrigger:new TimestampTrigger(now + i*gap),
-          data:{url:location.href}
-        });
-      }
-    } else {
-      startPageTimer();
-    }
-    updateGrowth();
+  function scheduleNudges(){
+    return ensureSW().then(function(reg){
+      return clearScheduled(reg).then(function(){
+        var now=Date.now(), gap=interval*60000; put(K.anchor,String(now));
+        if(hasTrigger){
+          var chain=Promise.resolve();
+          for(var i=1;i<=14;i++){ (function(i){ chain=chain.then(function(){ return reg.showNotification("Notebook",{tag:"nudge-"+i,body:"Jot down what you're working on.",requireInteraction:true,showTrigger:new TimestampTrigger(now+i*gap),data:{url:location.href}}); }); })(i); }
+          return chain;
+        } else { startPageTimer(); }
+      });
+    }).then(function(){ tickGrowth(); });
   }
-
-  var pageTimer=null;
   function startPageTimer(){
-    stopPageTimer();
-    var next=Date.now()+interval*60000;
+    stopPageTimer(); var gap=interval*60000; var next=Date.now()+gap;
     pageTimer=setInterval(function(){
-      if(Date.now()>=next){
-        next=Date.now()+interval*60000;
-        localStorage.setItem(K.anchor, String(Date.now()));
+      if(Date.now()>=next){ next=Date.now()+gap; put(K.anchor,String(Date.now()));
         if(swReg) swReg.showNotification("Notebook",{body:"Jot down what you're working on.",requireInteraction:true,data:{url:location.href}});
-        else new Notification("Notebook",{body:"Jot down what you're working on."});
-      }
+        else try{new Notification("Notebook",{body:"Jot down what you're working on."});}catch(e){} }
     },20000);
   }
   function stopPageTimer(){ if(pageTimer){clearInterval(pageTimer);pageTimer=null;} }
-
-  async function enableNudges(){
-    if(!("Notification" in window)){ toast("Notifications not supported here"); return; }
-    var perm = Notification.permission;
-    if(perm!=="granted") perm = await Notification.requestPermission();
-    if(perm!=="granted"){ toast("Permission denied — enable it in the site's lock-icon menu"); capNote(); return; }
-    await scheduleNudges();
-    localStorage.setItem(K.on,"1");
-    updateGrowth(); toast("Nudges on — every "+interval+" min");
+  function enableNudges(){
+    if(typeof Notification==="undefined"){ toast("Notifications not supported here"); return; }
+    var perm=Notification.permission;
+    Promise.resolve(perm==="granted"?perm:Notification.requestPermission()).then(function(p){
+      if(p!=="granted"){ toast("Permission denied — allow it in the lock-icon menu"); setCapNote(); return; }
+      scheduleNudges().catch(function(){}); put(K.on,"1"); nudgesOn=true; tickGrowth(); toast("Nudges on — every "+interval+" min");
+    });
   }
-  async function disableNudges(){
-    localStorage.setItem(K.on,"0");
-    stopPageTimer();
-    try{ var reg=await ensureSW(); await clearScheduled(reg);}catch(e){}
-    updateGrowth(); toast("Nudges off");
-  }
-
-  $("nudgeBtn").addEventListener("click", function(){
-    if(isOn()) $("drawer").classList.add("open");
-    else enableNudges();
-  });
+  function disableNudges(){ put(K.on,"0"); nudgesOn=false; stopPageTimer(); ensureSW().then(clearScheduled).catch(function(){}); tickGrowth(); toast("Nudges off"); }
+  $("gaugeBtn").addEventListener("click", function(){ if(nudgesOn) openPanel("settingsPanel"); else enableNudges(); });
+  $("capBtn").addEventListener("click", function(){ if(nudgesOn) openPanel("settingsPanel"); else enableNudges(); });
   $("disableBtn").addEventListener("click", disableNudges);
-  $("applyInterval").addEventListener("click", async function(){
-    var v=parseInt($("interval").value,10);
-    if(isNaN(v)||v<5){ toast("Pick at least 5 min"); return; }
-    interval=v; localStorage.setItem(K.interval,String(v));
-    if(isOn()){ await scheduleNudges(); toast("Updated — every "+v+" min"); }
-    else { updateGrowth(); toast("Saved — "+v+" min"); }
+  $("applyInterval").addEventListener("click", function(){
+    var v=parseInt($("interval").value,10); if(isNaN(v)||v<5){ toast("Pick at least 5 min"); return; }
+    interval=v; put(K.interval,String(v));
+    if(nudgesOn){ scheduleNudges().catch(function(){}); toast("Updated — every "+v+" min"); }
+    else { tickGrowth(); toast("Saved — "+v+" min"); }
   });
-  $("testBtn").addEventListener("click", async function(){
-    if(!("Notification" in window)){toast("Not supported");return;}
-    var perm=Notification.permission; if(perm!=="granted") perm=await Notification.requestPermission();
-    if(perm!=="granted"){toast("Permission denied");return;}
-    var reg=await ensureSW();
-    if(hasTrigger){
-      await reg.showNotification("Notebook — test",{tag:"nudge-test",body:"If you see this, scheduled nudges work. Try closing the tab and waiting.",requireInteraction:true,showTrigger:new TimestampTrigger(Date.now()+5000),data:{url:location.href}});
-      toast("Test scheduled — fires in 5s (you can close the tab)");
-    } else {
-      setTimeout(function(){reg.showNotification("Notebook — test",{body:"Fired while tab open.",data:{url:location.href}})},5000);
-      toast("Test fires in 5s — keep tab open");
-    }
+  $("testBtn").addEventListener("click", function(){
+    if(typeof Notification==="undefined"){toast("Not supported");return;}
+    var perm=Notification.permission;
+    Promise.resolve(perm==="granted"?perm:Notification.requestPermission()).then(function(p){
+      if(p!=="granted"){toast("Permission denied");return;}
+      ensureSW().then(function(reg){
+        if(hasTrigger){ reg.showNotification("Notebook — test",{tag:"nudge-test",body:"Scheduled nudges work. Try closing the tab.",requireInteraction:true,showTrigger:new TimestampTrigger(Date.now()+5000),data:{url:location.href}}); toast("Test scheduled — fires in 5s"); }
+        else { setTimeout(function(){reg.showNotification("Notebook — test",{body:"Fired while tab open.",data:{url:location.href}});},5000); toast("Test fires in 5s — keep tab open"); }
+      }).catch(function(){ toast("Couldn't schedule test"); });
+    });
   });
+
+  // ====================================================================
+  //  GITHUB SYNC
+  // ====================================================================
+  function ghCfg(){
+    var f=ls("nb_gh_folder");
+    return {
+      token:ls("nb_gh_token")||"",
+      owner:ls("nb_gh_owner")||"Maxwell0013",
+      repo:ls("nb_gh_repo")||"Transfer",
+      branch:ls("nb_gh_branch")||"main",
+      folder:(f!==null?f:"inbox")
+    };
+  }
+  function ghReady(){ var c=ghCfg(); return !!(c.token&&c.owner&&c.repo); }
+  function slug(str){ return (str||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,48)||"note"; }
+  function b64(str){ return btoa(unescape(encodeURIComponent(str))); }
+  function hashStr(s){ var h=5381,i=s.length; while(i) h=(h*33)^s.charCodeAt(--i); return (h>>>0).toString(36); }
+  function sessionFilename(s){ if(s.file) return s.file; var name=isoDate(s.created)+"-"+slug(s.title||"note")+"-"+s.id.slice(-4)+".md"; s.file=name; persist(); return name; }
+  function buildSyncMd(s){
+    var title=(s.title&&s.title.trim())||("Notebook "+isoDate(s.created));
+    var body=(s.body||"").trim();
+    if(!ghFront) return "# "+title+"\n\n"+body+"\n";
+    var iso=isoDate(s.created);
+    var fm="---\ntitle: "+JSON.stringify(title)+"\ndate: "+iso+"\ncreated: "+iso+"T"+clock(s.created)+"\nsource: notebook\ntags: [notebook, worklog]\n---\n\n";
+    return fm+"# "+title+"\n\n"+body+"\n";
+  }
+  function ghGetSha(cfg,path){
+    var url="https://api.github.com/repos/"+cfg.owner+"/"+cfg.repo+"/contents/"+path+"?ref="+encodeURIComponent(cfg.branch);
+    return fetch(url,{headers:{Authorization:"Bearer "+cfg.token,Accept:"application/vnd.github+json"}}).then(function(res){
+      if(res.status===200) return res.json().then(function(j){return j.sha;});
+      if(res.status===404) return null;
+      return res.text().then(function(t){ throw new Error("read "+res.status+" "+t.slice(0,90)); });
+    });
+  }
+  function setSyncState(st){ syncState=st; renderSyncBits(); }
+  function syncSession(s,opts){
+    opts=opts||{};
+    if(!s) return Promise.resolve();
+    if(!ghReady()){ if(opts.manual){ openPanel("syncPanel"); setSyncState("setup"); toast("Add a GitHub token first"); } return Promise.resolve(); }
+    var body=(s.body||"").trim();
+    if(!body && !opts.manual) return Promise.resolve();
+    var cfg=ghCfg();
+    var md=buildSyncMd(s); var h=hashStr(md);
+    if(!opts.manual && s.syncedHash===h) return Promise.resolve();
+    var fname=sessionFilename(s);
+    var folder=cfg.folder?cfg.folder.replace(/^\/+|\/+$/g,"")+"/":"";
+    var path=folder+encodeURIComponent(fname);
+    setSyncState("syncing"); syncErr="";
+    return ghGetSha(cfg,path).then(function(sha){
+      var url="https://api.github.com/repos/"+cfg.owner+"/"+cfg.repo+"/contents/"+path;
+      var payload={message:(sha?"Update ":"Add ")+fname+" (notebook)",content:b64(md),branch:cfg.branch};
+      if(sha) payload.sha=sha;
+      return fetch(url,{method:"PUT",headers:{Authorization:"Bearer "+cfg.token,Accept:"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify(payload)});
+    }).then(function(res){
+      if(!(res.status===200||res.status===201)) return res.text().then(function(t){ throw new Error(res.status+" "+t.slice(0,110)); });
+      s.syncedHash=h; s.synced=Date.now(); persist();
+      syncedAt=Date.now(); syncErr=""; setSyncState("ok");
+      if(opts.manual) toast("Committed "+fname);
+    }).catch(function(e){
+      var msg=String(e&&e.message||e);
+      if(/Failed to fetch|NetworkError/i.test(msg)) msg="network blocked — host the app over https";
+      syncErr=msg; setSyncState("err");
+      if(opts.manual) toast("Sync failed — see panel");
+    });
+  }
+  function syncCurrent(opts){ flush(); return syncSession(curObj(),opts); }
+  function scheduleAutoSync(){ if(!ghAuto||!ghReady()) return; clearTimeout(autoT); autoT=setTimeout(function(){syncCurrent({});},15000); }
+  function saveSyncConfig(silent){
+    put("nb_gh_token",$("ghToken").value.trim());
+    put("nb_gh_owner",$("ghOwner").value.trim()||"Maxwell0013");
+    put("nb_gh_repo",$("ghRepo").value.trim()||"Transfer");
+    put("nb_gh_branch",$("ghBranch").value.trim()||"main");
+    put("nb_gh_folder",$("ghFolder").value.trim());
+    setSyncState(ghReady()?"ready":"setup");
+    if(!silent) toast("GitHub settings saved");
+  }
+  function forgetToken(){ put("nb_gh_token",""); $("ghToken").value=""; setSyncState("setup"); toast("Token removed from this browser"); }
+
+  function renderSyncBits(){
+    var cfg=ghCfg();
+    var st=syncState!=null?syncState:(ghReady()?"ready":"setup");
+    var dotMap={setup:"#f1b24a",ready:"#9fb0a8",syncing:"#b9ff00",ok:"#05e560",err:"#e0603e"};
+    var dot=dotMap[st]||"#9fb0a8";
+    $("syncDotDock").style.background=dot;
+    $("syncStatusDot").style.background=dot;
+    $("syncBtnLabel").textContent=(st==="syncing"?"Syncing…":(st==="ok"?"Synced":(st==="err"?"Retry":"Sync")));
+    var line=(st==="ok")?("Last commit "+(syncedAt?relMin(syncedAt):"just now")):(st==="err"?("Error — "+(syncErr||"sync failed")):(st==="syncing"?"Committing to GitHub…":(ghReady()?"Connected — ready to sync":"Not connected — paste a token below")));
+    $("syncStatusLine").textContent=line;
+    $("syncStatus").style.background=(st==="err"?"#fbeee9":(st==="ok"?"#eef7f0":"#f3f6f2"));
+    $("syncStatusLine").style.color=(st==="err"?"#8a3b2e":"#42525a");
+    // file preview
+    var cur=curObj();
+    var fileName=cur?(cur.file||(isoDate(cur.created)+"-"+slug(cur.title||"note")+"-"+cur.id.slice(-4)+".md")):"note.md";
+    var folderC=cfg.folder?cfg.folder.replace(/^\/+|\/+$/g,"")+"/":"";
+    $("filePreview").textContent=cfg.repo+"/"+folderC+fileName;
+    // toggles
+    $("autoPill").textContent=ghAuto?"On":"Off"; $("autoPill").style.background=ghAuto?"#05e560":"#e3e7e3"; $("autoPill").style.color=ghAuto?"#15252f":"#7d8f93";
+    $("frontPill").textContent=ghFront?"On":"Off"; $("frontPill").style.background=ghFront?"#05e560":"#e3e7e3"; $("frontPill").style.color=ghFront?"#15252f":"#7d8f93";
+  }
+  function fillSyncInputs(){
+    var cfg=ghCfg();
+    $("ghToken").value=cfg.token; $("ghOwner").value=cfg.owner; $("ghRepo").value=cfg.repo; $("ghBranch").value=cfg.branch; $("ghFolder").value=cfg.folder;
+  }
+  $("syncBtn").addEventListener("click", function(){ fillSyncInputs(); togglePanel("syncPanel"); renderSyncBits(); });
+  $("syncClose").addEventListener("click", function(){ $("syncPanel").classList.add("hidden"); });
+  $("syncNow").addEventListener("click", function(){ saveSyncConfig(true); syncCurrent({manual:true}); });
+  $("saveSync").addEventListener("click", function(){ saveSyncConfig(false); });
+  $("forgetToken").addEventListener("click", forgetToken);
+  $("autoToggle").addEventListener("click", function(){ ghAuto=!ghAuto; put("nb_gh_auto",ghAuto?"1":"0"); renderSyncBits(); if(ghAuto) scheduleAutoSync(); });
+  $("frontToggle").addEventListener("click", function(){ ghFront=!ghFront; put("nb_gh_front",ghFront?"1":"0"); renderSyncBits(); });
+
+  // ---------- panels ----------
+  function openPanel(id){ ["settingsPanel","syncPanel","sessionsPanel"].forEach(function(p){ if(p!==id) $(p).classList.add("hidden"); }); $(id).classList.remove("hidden"); }
+  function togglePanel(id){ var el=$(id); var willOpen=el.classList.contains("hidden"); if(willOpen) openPanel(id); else el.classList.add("hidden"); }
+  $("gearBtn").addEventListener("click", function(){ togglePanel("settingsPanel"); });
+  $("settingsClose").addEventListener("click", function(){ $("settingsPanel").classList.add("hidden"); });
+  $("sessionsBtn").addEventListener("click", function(){ togglePanel("sessionsPanel"); });
+  $("newBtn").addEventListener("click", newSession);
+  $("newBtn2").addEventListener("click", newSession);
+  $("hintGo").addEventListener("click", newSession);
+  $("hintNo").addEventListener("click", function(){ $("hintBar").classList.add("hidden"); });
 
   // ---------- boot ----------
-  renderForest();
-  if(isOn()){ scheduleNudges().catch(function(){}); }
-  else { ensureSW().catch(function(){}); }
-
-  // ---------- toast ----------
-  var toastT;
-  function toast(m){var t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("show")},2200);}
+  loadStore();
+  loadCurrentIntoEditor();
+  (function(){
+    var s=curObj();
+    $("dateStr").textContent=fmtDate(new Date(s.created));
+    $("sessionLabel").textContent=labelFor(s);
+    buildSessionList();
+    if(s && !isToday(s.created) && (s.body||"").trim().length>0){
+      $("hintText").textContent="Your open session is from "+relDay(s.created)+". Start a fresh one for today?";
+      $("hintBar").classList.remove("hidden");
+    }
+  })();
+  recompute(); refreshLast(); setCapNote(); renderSyncBits();
+  lastT=setInterval(refreshLast,15000);
+  growthT=setInterval(tickGrowth,5000);
+  if(nudgesOn){ scheduleNudges().catch(function(){}); } else { ensureSW().catch(function(){}); }
 })();
 </script>
 </body>
