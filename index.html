@@ -60,6 +60,7 @@
   .capbtn .sq{width:8px;height:8px;border-radius:2px;display:block}
   .savechip{display:flex;align-items:center;gap:7px;font:500 11.5px var(--sans);color:#7d8f93}
   .savechip .ci{width:7px;height:7px;border-radius:50%;display:block;transition:background .3s}
+  .brandlogo{height:17px;width:auto;display:block;opacity:.95}
 
   .hint{flex:none;display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 20px;background:#e7f7ea;border-bottom:1px solid #cdeed5;animation:arSlide .3s ease}
   .hint span{font:500 13px var(--sans);color:#15433a}
@@ -170,6 +171,7 @@
     .tool .tl{display:none}
     .tool{padding:10px}
     .tool.primary{padding:10px 12px}
+    .brandlogo{display:none}
   }
 </style>
 </head>
@@ -202,6 +204,8 @@
         <span class="ci" id="savedDot"></span>
         <span id="savedText">autosaves</span>
       </div>
+      <span class="vr"></span>
+      <img class="brandlogo" src="logo.png" alt="" aria-hidden="true">
     </div>
   </header>
 
